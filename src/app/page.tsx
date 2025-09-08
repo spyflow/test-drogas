@@ -14,20 +14,10 @@ export default function Home() {
     "¿Cuál es el animal nacional de Australia?",
     "¿Cuál es la capital de Mongolia?",
     "¿Cuántos elementos tiene la tabla periódica?",
-    "¿Cuál es el río más largo del mundo?",
-    "¿Cuántos lados tiene un dodecágono?",
-    "¿Cuál es el idioma más hablado del mundo?",
-    "¿Cuántos colores tiene el arcoíris?",
-    "¿Cuántos huesos tiene el cuerpo humano adulto?",
-    "¿Cuál es la montaña más alta del mundo?",
-    "¿Cuántos océanos hay en la Tierra?",
-    "¿Cuál es el país más grande del mundo?",
-    "¿Cuántos sentidos tiene el ser humano según el modelo tradicional?",
-    "¿Cuál es la capital de Canadá?",
   ];
 
-  const [answers, setAnswers] = useState<string[]>(Array(20).fill(""));
-  const [block, setBlock] = useState(0); // 0 a 3
+  const [answers, setAnswers] = useState<string[]>(Array(10).fill(""));
+  const [block, setBlock] = useState(0); // 0 a 1
   const [finished, setFinished] = useState(false);
   const [result, setResult] = useState<null | "positivo" | "negativo">(null);
 
@@ -69,7 +59,7 @@ export default function Home() {
   };
 
   const handleRestart = () => {
-    setAnswers(Array(20).fill(""));
+    setAnswers(Array(10).fill(""));
     setBlock(0);
     setFinished(false);
     setResult(null);
@@ -98,7 +88,7 @@ export default function Home() {
               onClick={handleNext}
               disabled={questions.slice(block * 5, block * 5 + 5).some((_, i) => !answers[block * 5 + i].trim())}
             >
-              {block === 3 ? "Finalizar" : "Siguiente"}
+              {block === 1 ? "Finalizar" : "Siguiente"}
             </button>
           </div>
         ) : (
