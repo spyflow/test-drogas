@@ -76,7 +76,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4 text-gray-900">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full flex flex-col items-center">
         <h1 className="text-2xl font-bold mb-4 text-center">Test de Drogas Online</h1>
         {!finished ? (
