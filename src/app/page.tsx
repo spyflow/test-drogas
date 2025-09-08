@@ -1,103 +1,141 @@
-import Image from "next/image";
+
+"use client";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const questions = [
+    "¿Qué día de la semana es hoy?",
+    "¿Qué hora es (aproximadamente)?",
+    "¿Cuántas lunas tiene la Tierra?",
+    "¿Cuántas capas tiene la Tierra?", // Esta es la clave
+    "¿Cuál es el color del caballo blanco de Napoleón?",
+    "¿Cuántos continentes hay en el mundo?",
+    "¿Cuántos planetas tiene el sistema solar?",
+    "¿Cuál es el animal nacional de Australia?",
+    "¿Cuál es la capital de Mongolia?",
+    "¿Cuántos elementos tiene la tabla periódica?",
+    "¿Cuál es el río más largo del mundo?",
+    "¿Cuántos lados tiene un dodecágono?",
+    "¿Cuál es el idioma más hablado del mundo?",
+    "¿Cuántos colores tiene el arcoíris?",
+    "¿Cuántos huesos tiene el cuerpo humano adulto?",
+    "¿Cuál es la montaña más alta del mundo?",
+    "¿Cuántos océanos hay en la Tierra?",
+    "¿Cuál es el país más grande del mundo?",
+    "¿Cuántos sentidos tiene el ser humano según el modelo tradicional?",
+    "¿Cuál es la capital de Canadá?",
+  ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  const [answers, setAnswers] = useState<string[]>(Array(20).fill(""));
+  const [block, setBlock] = useState(0); // 0 a 3
+  const [finished, setFinished] = useState(false);
+  const [result, setResult] = useState<null | "positivo" | "negativo">(null);
+
+  useEffect(() => {
+    if (finished && result === null) {
+      if (typeof window !== "undefined") {
+        const alreadyTested = localStorage.getItem("drugTested");
+        // Si es la primera vez, siempre positivo
+        if (!alreadyTested) {
+          setResult("positivo");
+          localStorage.setItem("drugTested", "1");
+        } else {
+          // La respuesta a la pregunta 3 (índice 3) decide el resultado
+          const capas = answers[3]?.trim().replace(/[^0-9]/g, "");
+          if (capas === "3") {
+            setResult("negativo");
+          } else if (capas === "5") {
+            setResult("positivo");
+          } else {
+            setResult(Math.random() > 0.5 ? "positivo" : "negativo");
+          }
+        }
+      }
+    }
+  }, [finished, result, answers]);
+
+  const handleAnswer = (idx: number, value: string) => {
+    const newAnswers = [...answers];
+    newAnswers[idx] = value;
+    setAnswers(newAnswers);
+  };
+
+  const handleNext = () => {
+    if ((block + 1) * 5 < questions.length) {
+      setBlock(block + 1);
+    } else {
+      setFinished(true);
+    }
+  };
+
+  const handleRestart = () => {
+    setAnswers(Array(20).fill(""));
+    setBlock(0);
+    setFinished(false);
+    setResult(null);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-4">
+      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full flex flex-col items-center">
+        <h1 className="text-2xl font-bold mb-4 text-center">Test de Drogas Online</h1>
+        {!finished ? (
+          <div className="w-full flex flex-col gap-6 mb-6">
+            {questions.slice(block * 5, block * 5 + 5).map((q, i) => (
+              <div key={block * 5 + i} className="flex flex-col">
+                <span className="mb-2 font-medium">{block * 5 + i + 1}. {q}</span>
+                <input
+                  className="py-2 px-4 rounded border w-full"
+                  type="text"
+                  value={answers[block * 5 + i]}
+                  onChange={e => handleAnswer(block * 5 + i, e.target.value)}
+                  required
+                />
+              </div>
+            ))}
+            <button
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full transition self-end"
+              onClick={handleNext}
+              disabled={questions.slice(block * 5, block * 5 + 5).some((_, i) => !answers[block * 5 + i].trim())}
+            >
+              {block === 3 ? "Finalizar" : "Siguiente"}
+            </button>
+          </div>
+        ) : (
+          <div className="text-center mt-4">
+            <span className={`text-lg font-bold ${result === "positivo" ? "text-red-600" : "text-green-600"}`}>
+              Resultado: {result === "positivo" ? "Positivo" : "Negativo"}
+            </span>
+            <div className="mt-4 text-gray-700 text-sm">
+              {result === "positivo" && answers[3]?.trim().replace(/[^0-9]/g, "") === "3" && (
+                <>Respuesta errada. La Tierra tiene 5 capas: corteza, manto, núcleo externo, núcleo interno y litosfera.</>
+              )}
+              {result === "negativo" && answers[3]?.trim().replace(/[^0-9]/g, "") === "5" && (
+                <>Respuesta errada. La Tierra tiene 3 capas: corteza, manto y núcleo.</>
+              )}
+              {result !== null && !["3","5"].includes(answers[3]?.trim().replace(/[^0-9]/g, "")) && (
+                (() => {
+                  const opciones = [
+                    {n: 4, capas: "corteza, manto, núcleo externo y núcleo interno"},
+                    {n: 2, capas: "superficie y núcleo"},
+                    {n: 6, capas: "corteza, manto superior, manto inferior, núcleo externo, núcleo interno y astenosfera"},
+                  ];
+                  const aleatoria = opciones[Math.floor(Math.random()*opciones.length)];
+                  return <>Respuesta errada. La Tierra tiene {aleatoria.n} capas: {aleatoria.capas}.</>;
+                })()
+              )}
+            </div>
+            <div className="mt-4">
+              <button
+                className="text-blue-600 underline text-sm"
+                onClick={handleRestart}
+              >
+                Volver a realizar el test
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
